@@ -1,5 +1,9 @@
+// execute tests with
+// npx hardhat test
+
 const { expect } = require('chai');
 const { ethers } = require('hardhat');
+const { shapes } = require('../../packages/glips/index.js')
 
 const tokens = (n) => {
   return ethers.utils.parseUnits(n.toString(), 'ether')
@@ -28,7 +32,7 @@ describe('Crowdsale', () => {
   })
 
   describe('Deployment', () => {
-
+        
     it('sends tokens to the Crowdsale contract', async () => {
       expect(await token.balanceOf(crowdsale.address)).to.equal(tokens(1000000))
     })
@@ -47,7 +51,7 @@ describe('Crowdsale', () => {
     let transaction, result
     let amount = tokens(10)
 
-    describe('Success', () => {
+    describe(`${shapes.green_diamond} Basic`, () => {
 
       beforeEach(async () => {
         transaction = await crowdsale.connect(user1).buyTokens(amount, { value: ether(10) })
@@ -71,7 +75,7 @@ describe('Crowdsale', () => {
 
     })
 
-    describe('Failure', () => {
+    describe(`${shapes.red_triangle} Special`, () => {
 
       it('rejects insufficent ETH', async () => {
         await expect(crowdsale.connect(user1).buyTokens(tokens(10), { value: 0 })).to.be.reverted
@@ -85,7 +89,7 @@ describe('Crowdsale', () => {
     let transaction, result
     let amount = ether(10)
 
-    describe('Success', () => {
+    describe(`${shapes.green_diamond} Basic`, () => {
 
       beforeEach(async () => {
         transaction = await user1.sendTransaction({ to: crowdsale.address, value: amount })
@@ -107,7 +111,7 @@ describe('Crowdsale', () => {
     let transaction, result
     let price = ether(2)
 
-    describe('Success', () => {
+    describe(`${shapes.green_diamond} Basic`, () => {
 
       beforeEach(async () => {
         transaction = await crowdsale.connect(deployer).setPrice(ether(2))
@@ -120,7 +124,7 @@ describe('Crowdsale', () => {
 
     })
 
-    describe('Failure', () => {
+    describe(`${shapes.red_triangle} Special`, () => {
 
       it('prevents non-owner from updating price', async () => {
         await expect(crowdsale.connect(user1).setPrice(price)).to.be.reverted
@@ -129,12 +133,12 @@ describe('Crowdsale', () => {
     })
   })
 
-  describe('Finalzing Sale', () => {
+  describe('Finalizing Sale', () => {
     let transaction, result
     let amount = tokens(10)
     let value = ether(10)
 
-    describe('Success', () => {
+    describe(`${shapes.green_diamond} Basic`, () => {
 
       beforeEach(async () => {
         transaction = await crowdsale.connect(user1).buyTokens(amount, { value: value })
@@ -160,7 +164,7 @@ describe('Crowdsale', () => {
 
     })
 
-    describe('Failure', () => {
+    describe(`${shapes.red_triangle} Special`, () => {
 
       it('prevents non-owner from finalizing', async () => {
         await expect(crowdsale.connect(user1).finalize()).to.be.reverted
